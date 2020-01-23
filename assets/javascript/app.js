@@ -24,10 +24,10 @@ $("#submit").on("click", function(event) {
     event.preventDefault();
 
     // grabbing user inputs 
-    const trainName = $("#train-input").val().trim();
-    const destination = $("#destination-input").val().trim();
-    const firstTrainTime = $("#train-time-input").val().trim();
-    const frequency = $("#frequency-input").val().trim();
+    let trainName = $("#train-input").val().trim();
+    let destination = $("#destination-input").val().trim();
+    let firstTrainTime = $("#train-time-input").val().trim();
+    let frequency = $("#frequency-input").val().trim();
 
     // creating temporary local object for holding data to push to firebase
     const newTrain = {
@@ -51,6 +51,49 @@ $("#submit").on("click", function(event) {
     $("#frequency-input").val("");
 
 });
+
+db.ref().on("child_added", function(childSnapshot) {
+
+    // store everything into a variable 
+    let trainName = childSnapshot.val().train;
+    let destination = childSnapshot.val().destination;
+    let firstTrainTime = childSnapshot.val().time;
+    let frequency = childSnapshot.val().frequency;
+
+    // subtracts a year from first time to ensure it comes before current time
+    const firstTimeConverted = moment(firstTrainTime, "HH:mm").subtract(1, "years");
+
+    // Using moment capturing current time
+    const currentTime = moment();
+
+    // getting the differece between now and provided train time.
+    const timeDiff = moment().diff(moment(firstTimeConverted), "minutes");
+
+    // dividing the differece between now and provided train time by the frequency to get the time apart. 
+    const timeApart = timeDiff % frequency;
+   
+    // minutes away 
+    const minutesUntilTrain = frequency - timeApart;
+
+    // time to next train 
+    const nextArrival = moment().add(minutesUntilTrain, "minutes").format("hh:mm")
+
+    // create the new row 
+    const newRow = $("<tr>").append(
+        $("<td>").text(trainName),
+        $("<td>").text(destination),
+        $("<td>").text(frequency),
+        $("<td>").text(nextArrival),
+        $("<td>").text(minutesUntilTrain),
+      );
+
+      $("#train-schedule > tbody").append(newRow);
+
+    });
+
+
+
+
 
 
 
