@@ -14,16 +14,3 @@
 
 var db = firebase.database()
 
-var clickCounter = 0;
-
-$("#click-button").on("click", function() {
-
-    // Add to clickCounter
-    clickCounter++;
-
-    //  Store Click Data to Firebase in a JSON property called clickCount
-    // Note how we are using the Firebase .set() method
-    db.ref().set({
-      clickCount: clickCounter
-    });
-  });
