@@ -1,5 +1,5 @@
-<script>
-  // Your web app's Firebase configuration
+
+// web app's Firebase configuration
   var firebaseConfig = {
     apiKey: "AIzaSyCJADMYgWX5sj_Bc2KAo8Lxd1JBHxLRTfM",
     authDomain: "train-scheduler-a8f1e.firebaseapp.com",
@@ -12,12 +12,18 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 
+var db = firebase.database()
 
+var clickCounter = 0;
 
+$("#click-button").on("click", function() {
 
+    // Add to clickCounter
+    clickCounter++;
 
-
-
-
-
-</script>
+    //  Store Click Data to Firebase in a JSON property called clickCount
+    // Note how we are using the Firebase .set() method
+    db.ref().set({
+      clickCount: clickCounter
+    });
+  });
