@@ -1,5 +1,9 @@
+$(document).ready(function() {
+
+removeText()
 
 // web app's Firebase configuration
+
 const firebaseConfig = {
     apiKey: "AIzaSyCJADMYgWX5sj_Bc2KAo8Lxd1JBHxLRTfM",
     authDomain: "train-scheduler-a8f1e.firebaseapp.com",
@@ -29,8 +33,15 @@ $("#submit").on("click", function(event) {
     let firstTrainTime = $("#train-time-input").val().trim();
     let frequency = $("#frequency-input").val().trim();
 
+    if (trainName.length === 0 || destination.length === 0 || firstTrainTime.length < 5 || firstTrainTime.charAt(0) > 2 || frequency.length === 0) {
+
+        $("#train-added").text("Please complete all fields appropriately.");
+    }
+
     // creating temporary local object for holding data to push to firebase
-    const newTrain = {
+    else {
+        
+        const newTrain = {
         train: trainName,
         destination: destination,
         time: firstTrainTime,
@@ -39,16 +50,8 @@ $("#submit").on("click", function(event) {
 
     // pushes object to database.
     db.ref().push(newTrain);
-    // updates text next to submit button
-    $("#train-added").text("Train added!");
-    // sets a function to remove text after five seconds.
-    setTimeout(removeText, 5000);
 
-    // clears all the text boxes
-    $("#train-input").val("");
-    $("#destination-input").val("");
-    $("#train-time-input").val("");
-    $("#frequency-input").val("");
+}
 
 });
 
@@ -89,7 +92,20 @@ db.ref().on("child_added", function(childSnapshot) {
 
       $("#train-schedule > tbody").append(newRow);
 
+     // updates text next to submit button
+    $("#train-added").text("Train added!");
+    // sets a function to remove text after five seconds.
+    setTimeout(removeText, 3000);
+
+    // clears all the text boxes
+    $("#train-input").val("");
+    $("#destination-input").val("");
+    $("#train-time-input").val("");
+    $("#frequency-input").val("");
+
     });
+
+});
 
 
 
